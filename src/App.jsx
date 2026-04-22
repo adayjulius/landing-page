@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import logo from './assets/logo.png';
 
 const APP_DATA = [
-  { id: 1, name: "LITIGATION SITE", cat: "Communication", icon: "🌐", desc: "Need anything for work? Check this app.", url: "https://sites.google.com/view/stlaf-litigation/home", dept: "Litigation Department" },
+  { id: 1, name: "STLAPPss-Litigation", cat: "Internal", icon: "🌐", desc: "Need anything for work? Check this app.", url: "https://sites.google.com/view/stlaf-litigation/home", dept: "Litigation Department" },
   { id: 2, name: "Teams", cat: "Collaboration", icon: "👥", desc: "Chat, meet, and collaborate with STLAF teams.", url: "https://teams.microsoft.com", dept: "IT Department" },
   { id: 3, name: "HR Portal", cat: "Internal", icon: "🏢", desc: "View payslips, request leave, and manage benefits.", url: "https://google.com", dept: "HR Department" },
   { id: 4, name: "IT Support", cat: "Ticketing System", icon: "🛠️", desc: "Submit tickets for hardware or software issues.", url: "http://192.168.112.12:3000/", dept: "IT Department" },
