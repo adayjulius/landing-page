@@ -12,19 +12,15 @@ const APP_DATA = [
   { id: 8, name: "Directory", cat: "People", icon: "🔍", desc: "Find contact information for all STLAF employees.", url: "https://google.com", dept: "IT Department" },
 ];
 
-const VALID_USERS = [
-  { username: "admin", password: "admin123", fullName: "Admin User" },
-  { username: "user", password: "user123", fullName: "Regular User" },
-  { username: "stlaf", password: "stlaf2025", fullName: "STLAF Employee" },
-];
+const VALID_USERNAME = "stlafEmp";
+const VALID_PASSWORD = "stlaf@2026!";
 
 function App() {
-  // Pages: "welcome" → "login" → "apps"
   const [currentPage, setCurrentPage] = useState("welcome");
   const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [currentUser, setCurrentUser] = useState(null);
   const [searchTerm, setSearchTerm] = useState("");
   const [dateTime, setDateTime] = useState(new Date());
+  const [showLoginPanel, setShowLoginPanel] = useState(false);
 
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
@@ -33,26 +29,33 @@ function App() {
   const [isLoading, setIsLoading] = useState(false);
   const [loginShake, setLoginShake] = useState(false);
 
-  // Check saved session on mount
   useEffect(() => {
     const savedUser = localStorage.getItem("stlaf_user");
     if (savedUser) {
-      try {
-        const parsed = JSON.parse(savedUser);
-        setCurrentUser(parsed);
-        setIsLoggedIn(true);
-        setCurrentPage("apps");
-      } catch {
-        localStorage.removeItem("stlaf_user");
-      }
+      setIsLoggedIn(true);
+      setCurrentPage("apps");
     }
   }, []);
 
-  // Live clock
   useEffect(() => {
     const timer = setInterval(() => setDateTime(new Date()), 1000);
     return () => clearInterval(timer);
   }, []);
+
+  const handleGetStarted = () => {
+    setCurrentPage("login");
+    setTimeout(() => setShowLoginPanel(true), 50);
+  };
+
+  const handleBackToWelcome = () => {
+    setShowLoginPanel(false);
+    setTimeout(() => {
+      setCurrentPage("welcome");
+      setUsername("");
+      setPassword("");
+      setLoginError("");
+    }, 500);
+  };
 
   const handleLogin = (e) => {
     e.preventDefault();
@@ -60,16 +63,11 @@ function App() {
     setIsLoading(true);
 
     setTimeout(() => {
-      const foundUser = VALID_USERS.find(
-        (u) => u.username.toLowerCase() === username.toLowerCase() && u.password === password
-      );
-
-      if (foundUser) {
-        const userData = { username: foundUser.username, fullName: foundUser.fullName };
-        setCurrentUser(userData);
+      if (username === VALID_USERNAME && password === VALID_PASSWORD) {
+        localStorage.setItem("stlaf_user", "authenticated");
         setIsLoggedIn(true);
         setCurrentPage("apps");
-        localStorage.setItem("stlaf_user", JSON.stringify(userData));
+        setShowLoginPanel(false);
         setUsername("");
         setPassword("");
         setLoginError("");
@@ -84,8 +82,8 @@ function App() {
 
   const handleLogout = () => {
     setIsLoggedIn(false);
-    setCurrentUser(null);
     setCurrentPage("welcome");
+    setShowLoginPanel(false);
     setSearchTerm("");
     localStorage.removeItem("stlaf_user");
   };
@@ -104,10 +102,6 @@ function App() {
         .footer-icon { transition: all 0.3s ease; }
         .footer-icon:hover { transform: scale(1.25); color: #CCAA49; }
         
-        @keyframes fadeInUp {
-          from { opacity: 0; transform: translateY(30px); }
-          to { opacity: 1; transform: translateY(0); }
-        }
         @keyframes shake {
           0%, 100% { transform: translateX(0); }
           10%, 30%, 50%, 70%, 90% { transform: translateX(-4px); }
@@ -125,9 +119,6 @@ function App() {
           from { opacity: 0; }
           to { opacity: 1; }
         }
-        .login-card {
-          animation: fadeInUp 0.6s ease-out;
-        }
         .login-shake {
           animation: shake 0.6s ease-in-out;
         }
@@ -137,55 +128,278 @@ function App() {
         .spinner {
           animation: spin 1s linear infinite;
         }
+        .page-enter {
+          animation: fadeIn 0.5s ease-out;
+        }
+
+        /* No scroll for welcome & login */
+        .no-scroll-page {
+          height: 100vh;
+          overflow: hidden;
+        }
+
+        /* Split panel layout */
+        .split-container {
+          display: flex;
+          flex: 1;
+          position: relative;
+          overflow: hidden;
+        }
+
+        /* Left panel */
+        .left-panel {
+          width: 100%;
+          display: flex;
+          flex-direction: column;
+          justify-content: center;
+          align-items: center;
+          text-align: center;
+          padding: 1.5rem;
+          transition: all 0.7s cubic-bezier(0.4, 0, 0.2, 1);
+          position: relative;
+          z-index: 10;
+        }
+        .left-panel.slide-left {
+          width: 50%;
+        }
+
+        /* Right panel */
+        .right-panel {
+          width: 0;
+          overflow: hidden;
+          opacity: 0;
+          transition: all 0.7s cubic-bezier(0.4, 0, 0.2, 1);
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          background: #0A3055;
+          position: relative;
+          z-index: 10;
+        }
+        .right-panel.show {
+          width: 50%;
+          opacity: 1;
+        }
+        .right-panel .login-inner {
+          opacity: 0;
+          transform: translateX(60px);
+          transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1) 0.3s;
+        }
+        .right-panel.show .login-inner {
+          opacity: 1;
+          transform: translateX(0);
+        }
+
+        /* Reduced blur for header & footer */
+        .blur-section {
+          transition: filter 0.7s ease, opacity 0.7s ease;
+        }
+        .blur-section.blurred {
+          filter: blur(1px);
+          opacity: 0.6;
+          pointer-events: none;
+        }
+
+        /* Mobile */
+        @media (max-width: 768px) {
+          .left-panel.slide-left {
+            display: none;
+          }
+          .right-panel.show {
+            width: 100%;
+            position: fixed;
+            inset: 0;
+            z-index: 100;
+            overflow-y: auto;
+          }
+          .split-container.login-active::before {
+            content: '';
+            position: fixed;
+            inset: 0;
+            background: rgba(10, 48, 85, 0.7);
+            backdrop-filter: blur(3px);
+            z-index: 90;
+          }
+        }
+
         .login-bg-pattern {
           background-image: 
             radial-gradient(circle at 20% 50%, rgba(204, 170, 73, 0.08) 0%, transparent 50%),
             radial-gradient(circle at 80% 20%, rgba(10, 48, 85, 0.05) 0%, transparent 50%),
             radial-gradient(circle at 60% 80%, rgba(204, 170, 73, 0.05) 0%, transparent 50%);
         }
-        .page-enter {
-          animation: fadeIn 0.5s ease-out;
-        }
       `}</style>
 
-      {/* ======================== PAGE 1: WELCOME PAGE ======================== */}
-      {currentPage === "welcome" && (
-        <div className="min-h-screen flex flex-col page-enter">
-          
-          {/* Welcome Header */}
-          <nav className="bg-[#0A3055] text-white p-3 md:px-10 shadow-md">
+      {/* ======================== WELCOME + LOGIN PAGE ======================== */}
+      {(currentPage === "welcome" || currentPage === "login") && (
+        <div className="no-scroll-page flex flex-col">
+
+          {/* HEADER */}
+          <nav className={`bg-[#0A3055] text-white p-3 md:px-10 shadow-md shrink-0 blur-section ${currentPage === "login" ? "blurred" : ""}`}>
             <div className="max-w-[1600px] mx-auto flex items-center justify-between">
               <img src={logo} alt="STLAF" className="h-10 md:h-12 w-auto object-contain" />
             </div>
           </nav>
 
-          {/* Welcome Content */}
-          <main className="flex-grow flex flex-col justify-center items-center text-center px-6 py-20">
-            <div className="mb-6">
-              <p className="text-[#CCAA49] font-black tracking-[0.3em] uppercase text-xs md:text-sm">
-                {dateTime.toLocaleDateString(undefined, { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}
-              </p>
-              <p className="text-[#0A3055] font-light text-3xl md:text-5xl mt-1 tracking-tighter">
-                {dateTime.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' })}
-              </p>
+          {/* SPLIT CONTAINER */}
+          <div className={`split-container ${currentPage === "login" ? "login-active" : ""}`}>
+
+            {/* LEFT PANEL */}
+            <div className={`left-panel ${showLoginPanel ? "slide-left" : ""}`}>
+              <div className="max-w-xl">
+                <div className="mb-6">
+                  <p className="text-[#CCAA49] font-black tracking-[0.3em] uppercase text-xs md:text-sm">
+                    {dateTime.toLocaleDateString(undefined, { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}
+                  </p>
+                  <p className="text-[#0A3055] font-light text-3xl md:text-5xl mt-1 tracking-tighter">
+                    {dateTime.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' })}
+                  </p>
+                </div>
+
+                <h1 className="text-3xl md:text-5xl lg:text-6xl font-black text-[#0A3055] tracking-tighter uppercase mb-4 leading-none">
+                  WELCOME TO THE <br /> STLAF PORTAL
+                </h1>
+                <p className="text-[#0A3055] text-sm md:text-lg font-medium leading-relaxed mb-8 max-w-4xl">
+                  This web app is a list of applications where <span className="font-black">all departments</span> created their own apps to automate and innovate our workspace.
+                </p>
+
+                {!showLoginPanel && (
+                  <button
+                    onClick={handleGetStarted}
+                    className="bg-[#0A3055] text-white px-10 py-4 rounded-lg font-black uppercase text-lg tracking-widest shadow-xl hover:bg-[#CCAA49] transition-all active:scale-95"
+                  >
+                    Get Started
+                  </button>
+                )}
+              </div>
             </div>
 
-            <h1 className="text-4xl md:text-6xl font-black text-[#0A3055] tracking-tighter uppercase mb-4 leading-none">
-              WELCOME TO THE <br /> STLAF PORTAL
-            </h1>
-            <p className="text-[#0A3055] text-base md:text-xl font-medium leading-relaxed mb-8 max-w-4xl">
-              This web app is a list of applications where <span className="font-black">all departments</span> created their own apps to automate and innovate our workspace.
-            </p>
-            <button
-              onClick={() => setCurrentPage("login")}
-              className="bg-[#0A3055] text-white px-10 py-4 rounded-lg font-black uppercase text-lg tracking-widest shadow-xl hover:bg-[#CCAA49] transition-all active:scale-95"
-            >
-              Get Started
-            </button>
-          </main>
+            {/* RIGHT PANEL */}
+            <div className={`right-panel login-bg-pattern ${showLoginPanel ? "show" : ""}`}>
+              <div className="login-inner w-full max-w-md px-6 md:px-8">
 
-          {/* Welcome Footer */}
-          <footer className="bg-[#0A3055] text-white py-6 px-6 md:px-12 shrink-0 border-t border-white/5">
+                {/* Back Button */}
+                <button
+                  onClick={handleBackToWelcome}
+                  className="flex items-center gap-2 text-white/50 hover:text-[#CCAA49] text-[10px] font-bold uppercase tracking-widest transition-all duration-300 group mb-6"
+                >
+                  <svg className="w-4 h-4 transition-transform group-hover:-translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+                  </svg>
+                  Back
+                </button>
+
+                <div className={`bg-white rounded-2xl shadow-2xl overflow-hidden login-glow ${loginShake ? 'login-shake' : ''}`}>
+
+                  {/* Card Header - No icon */}
+                  <div className="bg-gradient-to-r from-[#0A3055] to-[#0d3d6e] px-8 py-6 text-center">
+                    <h2 className="text-white text-2xl font-black uppercase tracking-tight">Sign In</h2>
+                    <p className="text-white/50 text-xs mt-2 uppercase tracking-widest font-semibold">Access STLAF Portal</p>
+                  </div>
+
+                  {/* Card Body */}
+                  <div className="px-8 py-8">
+                    <form onSubmit={handleLogin} className="space-y-5">
+
+                      {/* Username */}
+                      <div>
+                        <label className="block text-[10px] font-black uppercase tracking-widest text-gray-400 mb-2">Username</label>
+                        <div className="relative">
+                          <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                            <svg className="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                            </svg>
+                          </div>
+                          <input
+                            type="text"
+                            value={username}
+                            onChange={(e) => { setUsername(e.target.value); setLoginError(""); }}
+                            placeholder="Enter your username"
+                            required
+                            disabled={isLoading}
+                            className="w-full pl-11 pr-4 py-3 bg-gray-50 border-2 border-gray-200 rounded-xl text-sm font-medium text-[#0A3055] outline-none focus:border-[#CCAA49] focus:bg-white transition-all duration-300 disabled:opacity-50"
+                          />
+                        </div>
+                      </div>
+
+                      {/* Password */}
+                      <div>
+                        <label className="block text-[10px] font-black uppercase tracking-widest text-gray-400 mb-2">Password</label>
+                        <div className="relative">
+                          <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                            <svg className="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                            </svg>
+                          </div>
+                          <input
+                            type={showPassword ? "text" : "password"}
+                            value={password}
+                            onChange={(e) => { setPassword(e.target.value); setLoginError(""); }}
+                            placeholder="Enter your password"
+                            required
+                            disabled={isLoading}
+                            className="w-full pl-11 pr-12 py-3 bg-gray-50 border-2 border-gray-200 rounded-xl text-sm font-medium text-[#0A3055] outline-none focus:border-[#CCAA49] focus:bg-white transition-all duration-300 disabled:opacity-50"
+                          />
+                          <button
+                            type="button"
+                            onClick={() => setShowPassword(!showPassword)}
+                            disabled={isLoading}
+                            className="absolute inset-y-0 right-0 pr-4 flex items-center text-gray-400 hover:text-[#0A3055] transition-colors"
+                          >
+                            {showPassword ? (
+                              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.878 9.878L3 3m6.878 6.878L21 21" />
+                              </svg>
+                            ) : (
+                              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                              </svg>
+                            )}
+                          </button>
+                        </div>
+                      </div>
+
+                      {/* Error */}
+                      {loginError && (
+                        <div className="flex items-center gap-2 bg-red-50 border border-red-200 text-red-600 px-4 py-3 rounded-xl text-xs font-semibold">
+                          <svg className="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                          </svg>
+                          {loginError}
+                        </div>
+                      )}
+
+                      {/* Submit */}
+                      <button
+                        type="submit"
+                        disabled={isLoading || !username || !password}
+                        className="w-full bg-[#0A3055] text-white py-3.5 rounded-xl font-black uppercase text-sm tracking-widest shadow-lg hover:bg-[#CCAA49] hover:text-[#0A3055] transition-all duration-300 active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-[#0A3055] disabled:hover:text-white flex items-center justify-center gap-2"
+                      >
+                        {isLoading ? (
+                          <>
+                            <svg className="w-4 h-4 spinner" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                            </svg>
+                            Signing In...
+                          </>
+                        ) : (
+                          <>Sign In</>
+                        )}
+                      </button>
+                    </form>
+                  </div>
+                </div>
+
+                <p className="text-center text-white/30 text-[10px] uppercase font-bold tracking-widest mt-6">
+                  Secured by STLAF IT Department
+                </p>
+              </div>
+            </div>
+          </div>
+
+          {/* FOOTER */}
+          <footer className={`bg-[#0A3055] text-white py-6 px-6 md:px-12 shrink-0 border-t border-white/5 blur-section ${currentPage === "login" ? "blurred" : ""}`}>
             <div className="max-w-[1600px] mx-auto flex flex-col md:flex-row justify-between items-center gap-6">
               <div className="text-center md:text-left">
                 <h3 className="font-bold text-sm uppercase leading-none mb-1 tracking-tight">Sadsad Tamesis Legal and Accountancy Firm</h3>
@@ -213,171 +427,7 @@ function App() {
         </div>
       )}
 
-      {/* ======================== PAGE 2: LOGIN PAGE ======================== */}
-      {currentPage === "login" && (
-        <div className="min-h-screen flex flex-col bg-[#0A3055] login-bg-pattern page-enter">
-
-          {/* Login Header */}
-          <div className="w-full p-6 flex items-center justify-between max-w-[1600px] mx-auto">
-            <img src={logo} alt="STLAF" className="h-12 md:h-14 w-auto object-contain" />
-            <button
-              onClick={() => setCurrentPage("welcome")}
-              className="flex items-center gap-2 text-white/50 hover:text-[#CCAA49] text-[10px] font-bold uppercase tracking-widest transition-all duration-300 group"
-            >
-              <svg className="w-4 h-4 transition-transform group-hover:-translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-              </svg>
-              Back
-            </button>
-          </div>
-
-          {/* Login Form */}
-          <div className="flex-grow flex items-center justify-center px-4 pb-12">
-            <div className={`w-full max-w-md login-card ${loginShake ? 'login-shake' : ''}`}>
-
-              <div className="bg-white rounded-2xl shadow-2xl overflow-hidden login-glow">
-
-                {/* Card Header */}
-                <div className="bg-gradient-to-r from-[#0A3055] to-[#0d3d6e] px-8 py-8 text-center">
-                  <div className="w-16 h-16 bg-[#CCAA49]/20 rounded-full flex items-center justify-center mx-auto mb-4">
-                    <svg className="w-8 h-8 text-[#CCAA49]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
-                    </svg>
-                  </div>
-                  <h2 className="text-white text-2xl font-black uppercase tracking-tight">Sign In</h2>
-                  <p className="text-white/50 text-xs mt-2 uppercase tracking-widest font-semibold">Access STLAF Portal</p>
-                </div>
-
-                {/* Card Body */}
-                <div className="px-8 py-8">
-                  <form onSubmit={handleLogin} className="space-y-5">
-
-                    {/* Username */}
-                    <div>
-                      <label className="block text-[10px] font-black uppercase tracking-widest text-gray-400 mb-2">Username</label>
-                      <div className="relative">
-                        <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                          <svg className="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-                          </svg>
-                        </div>
-                        <input
-                          type="text"
-                          value={username}
-                          onChange={(e) => { setUsername(e.target.value); setLoginError(""); }}
-                          placeholder="Enter your username"
-                          required
-                          disabled={isLoading}
-                          className="w-full pl-11 pr-4 py-3 bg-gray-50 border-2 border-gray-200 rounded-xl text-sm font-medium text-[#0A3055] outline-none focus:border-[#CCAA49] focus:bg-white transition-all duration-300 disabled:opacity-50"
-                        />
-                      </div>
-                    </div>
-
-                    {/* Password */}
-                    <div>
-                      <label className="block text-[10px] font-black uppercase tracking-widest text-gray-400 mb-2">Password</label>
-                      <div className="relative">
-                        <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                          <svg className="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
-                          </svg>
-                        </div>
-                        <input
-                          type={showPassword ? "text" : "password"}
-                          value={password}
-                          onChange={(e) => { setPassword(e.target.value); setLoginError(""); }}
-                          placeholder="Enter your password"
-                          required
-                          disabled={isLoading}
-                          className="w-full pl-11 pr-12 py-3 bg-gray-50 border-2 border-gray-200 rounded-xl text-sm font-medium text-[#0A3055] outline-none focus:border-[#CCAA49] focus:bg-white transition-all duration-300 disabled:opacity-50"
-                        />
-                        <button
-                          type="button"
-                          onClick={() => setShowPassword(!showPassword)}
-                          disabled={isLoading}
-                          className="absolute inset-y-0 right-0 pr-4 flex items-center text-gray-400 hover:text-[#0A3055] transition-colors"
-                        >
-                          {showPassword ? (
-                            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.878 9.878L3 3m6.878 6.878L21 21" />
-                            </svg>
-                          ) : (
-                            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
-                            </svg>
-                          )}
-                        </button>
-                      </div>
-                    </div>
-
-                    {/* Error */}
-                    {loginError && (
-                      <div className="flex items-center gap-2 bg-red-50 border border-red-200 text-red-600 px-4 py-3 rounded-xl text-xs font-semibold">
-                        <svg className="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                        </svg>
-                        {loginError}
-                      </div>
-                    )}
-
-                    {/* Submit */}
-                    <button
-                      type="submit"
-                      disabled={isLoading || !username || !password}
-                      className="w-full bg-[#0A3055] text-white py-3.5 rounded-xl font-black uppercase text-sm tracking-widest shadow-lg hover:bg-[#CCAA49] hover:text-[#0A3055] transition-all duration-300 active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-[#0A3055] disabled:hover:text-white flex items-center justify-center gap-2"
-                    >
-                      {isLoading ? (
-                        <>
-                          <svg className="w-4 h-4 spinner" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
-                          </svg>
-                          Signing In...
-                        </>
-                      ) : (
-                        <>
-                          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1" />
-                          </svg>
-                          Sign In
-                        </>
-                      )}
-                    </button>
-                  </form>
-
-                  {/* Demo Credentials */}
-                  <div className="mt-6 pt-5 border-t border-gray-100">
-                    <p className="text-[9px] uppercase font-black tracking-widest text-gray-300 text-center mb-3">Demo Credentials</p>
-                    <div className="grid grid-cols-2 gap-2">
-                      <div className="bg-gray-50 rounded-lg p-2.5 text-center">
-                        <p className="text-[10px] font-bold text-gray-500">Username</p>
-                        <p className="text-xs font-black text-[#0A3055]">admin</p>
-                      </div>
-                      <div className="bg-gray-50 rounded-lg p-2.5 text-center">
-                        <p className="text-[10px] font-bold text-gray-500">Password</p>
-                        <p className="text-xs font-black text-[#0A3055]">admin123</p>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              <p className="text-center text-white/30 text-[10px] uppercase font-bold tracking-widest mt-6">
-                Secured by STLAF IT Department
-              </p>
-            </div>
-          </div>
-
-          {/* Login Footer */}
-          <div className="p-4 text-center">
-            <p className="text-[9px] text-white/20 uppercase font-black tracking-widest">
-              Copyright © 2026 Sadsad Tamesis Legal and Accountancy Firm
-            </p>
-          </div>
-        </div>
-      )}
-
-      {/* ======================== PAGE 3: APPS GRID (after login) ======================== */}
+      {/* ======================== APPS PAGE ======================== */}
       {currentPage === "apps" && isLoggedIn && (
         <div className="min-h-screen flex flex-col page-enter">
 
@@ -388,33 +438,23 @@ function App() {
                 src={logo}
                 alt="STLAF"
                 className="h-10 md:h-12 w-auto object-contain cursor-pointer"
-                onClick={() => {
-                  setSearchTerm("");
-                }}
+                onClick={() => setSearchTerm("")}
               />
 
-              <div className="w-full max-w-[180px] md:max-w-sm ml-4">
-                <input
-                  type="text"
-                  placeholder="Search apps"
-                  value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)}
-                  className="w-full bg-white/10 border border-white/20 px-4 py-2 rounded-lg text-white text-sm outline-none focus:bg-white focus:text-[#0A3055] transition-all"
-                />
-              </div>
-
-              {/* User Info & Logout */}
+              {/* Search + Logout grouped on right */}
               <div className="flex items-center gap-3 ml-4">
-                <div className="hidden md:flex flex-col items-end">
-                  <span className="text-xs font-bold leading-none">{currentUser?.fullName}</span>
-                  <span className="text-[9px] text-white/50 uppercase tracking-widest font-semibold">@{currentUser?.username}</span>
-                </div>
-                <div className="w-9 h-9 bg-[#CCAA49] rounded-full flex items-center justify-center text-[#0A3055] font-black text-sm uppercase">
-                  {currentUser?.fullName?.charAt(0) || "U"}
+                <div className="w-[140px] md:w-[280px]">
+                  <input
+                    type="text"
+                    placeholder="Search apps"
+                    value={searchTerm}
+                    onChange={(e) => setSearchTerm(e.target.value)}
+                    className="w-full bg-white/10 border border-white/20 px-4 py-2 rounded-lg text-white text-sm outline-none focus:bg-white focus:text-[#0A3055] transition-all placeholder:text-white/40"
+                  />
                 </div>
                 <button
                   onClick={handleLogout}
-                  className="bg-white/10 hover:bg-red-500 text-white px-3 py-2 rounded-lg text-[10px] font-bold uppercase tracking-widest transition-all duration-300 flex items-center gap-1.5"
+                  className="bg-white/10 hover:bg-red-500 text-white px-3 py-2 rounded-lg text-[10px] font-bold uppercase tracking-widest transition-all duration-300 flex items-center gap-1.5 shrink-0"
                   title="Sign Out"
                 >
                   <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -430,10 +470,10 @@ function App() {
           <main className="flex-grow">
             <div className="max-w-[1600px] mx-auto w-full p-6 md:p-12">
 
-              {/* Welcome Banner */}
+              {/* Greeting */}
               <div className="mb-8 text-center md:text-left">
                 <h2 className="text-2xl md:text-3xl font-black text-[#0A3055] uppercase tracking-tight">
-                  Hello, {currentUser?.fullName} 👋
+                  Hello there! 👋
                 </h2>
                 <p className="text-sm text-gray-400 mt-1 font-medium">
                   Browse and launch your department applications below.
@@ -474,7 +514,6 @@ function App() {
                 ))}
               </div>
 
-              {/* No Results */}
               {filteredApps.length === 0 && (
                 <div className="text-center py-20">
                   <p className="text-6xl mb-4">🔍</p>
