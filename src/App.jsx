@@ -304,8 +304,8 @@ function App() {
             <h1 className="text-4xl md:text-7xl font-black tracking-tighter uppercase mb-6 leading-none text-[#0A3055]">
               WELCOME TO{" "} <br />
               <span className="shine-text">
-              STLAF HUB
-              </span> 
+                STLAF HUB
+              </span>
             </h1>
             <p className="text-[#0A3055] text-base md:text-xl font-medium leading-relaxed mb-8 max-w-4xl">A unified platform for accessing departmental web applications, tools, and services —<span className="font-black"> all in one place.</span> </p>
             {!showLoginPanel && <button onClick={handleGetStarted} className="bg-[#0A3055] text-white px-10 py-4 rounded-lg font-black uppercase text-lg tracking-widest shadow-xl hover:bg-[#CCAA49] transition-all active:scale-95">Get Started</button>}
@@ -315,7 +315,7 @@ function App() {
           <div className={`login-overlay ${loginCardVisible ? "visible" : ""}`}>
             <div className={`w-full max-w-[960px] mx-auto login-card-animated ${loginCardVisible && !isClosing ? "show" : ""} ${isClosing ? "closing" : ""} ${loginShake ? "login-shake" : ""}`}>
               <div className="login-split-card bg-white rounded-3xl shadow-2xl shadow-black/20 overflow-hidden flex flex-col md:flex-row min-h-[520px]">
-                <div className="login-left-panel md:w-[45%] p-8 md:p-12 flex flex-col justify-between bg-white"><div><h2 className="text-[#0A3055] text-2xl md:text-3xl font-black tracking-tight leading-tight mb-3">Your Workspace,<br /><span className="text-[#CCAA49]">One Portal.</span></h2><p className="text-gray-400 text-sm font-light leading-relaxed max-w-xs mb-10">Access all department tools, manage tasks, and collaborate — all from a single, secure platform.</p><div className="space-y-4">{[{ color: "blue", icon: "M13 10V3L4 14h7v7l9-11h-7z", text: "Fast access to department apps" },{ color: "green", icon: "M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z", text: "Secure and authenticated access" },{ color: "amber", icon: "M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z", text: "Built by teams, for teams" }].map((item, i) => (<div key={i} className="flex items-center gap-3"><div className={`w-8 h-8 bg-${item.color}-50 rounded-lg flex items-center justify-center flex-shrink-0`}><svg className={`w-4 h-4 text-${item.color}-500`} fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d={item.icon} /></svg></div><p className="text-sm text-gray-500 font-light">{item.text}</p></div>))}</div></div><div className="mt-8 pt-6 border-t border-gray-100"><p className="text-gray-500 text-[10px] uppercase font-semibold tracking-[0.15em]">Secured by STLAF IT Department</p></div></div>
+                <div className="login-left-panel md:w-[45%] p-8 md:p-12 flex flex-col justify-between bg-white"><div><h2 className="text-[#0A3055] text-2xl md:text-3xl font-black tracking-tight leading-tight mb-3">Your Workspace,<br /><span className="text-[#CCAA49]">One Portal.</span></h2><p className="text-gray-400 text-sm font-light leading-relaxed max-w-xs mb-10">Access all department tools, manage tasks, and collaborate — all from a single, secure platform.</p><div className="space-y-4">{[{ color: "blue", icon: "M13 10V3L4 14h7v7l9-11h-7z", text: "Fast access to department apps" }, { color: "green", icon: "M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z", text: "Secure and authenticated access" }, { color: "amber", icon: "M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z", text: "Built by teams, for teams" }].map((item, i) => (<div key={i} className="flex items-center gap-3"><div className={`w-8 h-8 bg-${item.color}-50 rounded-lg flex items-center justify-center flex-shrink-0`}><svg className={`w-4 h-4 text-${item.color}-500`} fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d={item.icon} /></svg></div><p className="text-sm text-gray-500 font-light">{item.text}</p></div>))}</div></div><div className="mt-8 pt-6 border-t border-gray-100"><p className="text-gray-500 text-[10px] uppercase font-semibold tracking-[0.15em]">Secured by STLAF IT Department</p></div></div>
                 <div className="login-right-panel md:w-[55%] bg-white p-3 md:p-4">
                   <div className="login-right-inner w-full h-full bg-[#123765] rounded-3xl p-8 md:p-10 flex flex-col justify-center items-center relative border border-white/40">
                     <button onClick={handleCloseLogin} className="close-btn absolute top-5 right-5 w-9 h-9 flex items-center justify-center rounded-xl bg-white hover:bg-red-50 text-gray-400 hover:text-red-500 shadow-sm z-10"><svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth={2.5} viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" /></svg></button>
@@ -324,7 +324,7 @@ function App() {
                     <div className="w-full slide-up-delay mb-4">
                       <button onClick={handleGoogleLogin} disabled={googleLoading || isLoading} className="google-btn w-full flex items-center justify-center gap-3 bg-white text-gray-700 py-4 rounded-xl font-semibold text-sm disabled:opacity-50 disabled:cursor-not-allowed" style={{ boxShadow: "0 2px 8px rgba(0,0,0,.08)" }}>
                         {googleLoading ? <svg className="w-5 h-5 spinner" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" /></svg>
-                          : <svg className="w-5 h-5" viewBox="0 0 24 24"><path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 01-2.2 3.32v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.1z" fill="#4285F4"/><path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/><path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/><path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/></svg>}
+                          : <svg className="w-5 h-5" viewBox="0 0 24 24"><path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 01-2.2 3.32v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.1z" fill="#4285F4" /><path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853" /><path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05" /><path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335" /></svg>}
                         <span>{googleLoading ? "Connecting..." : "Continue with Google"}</span>
                       </button>
                       <p className="text-center text-[10px] text-white/35 mt-3 font-medium">Only <span className="text-[#CCAA49] font-bold">STLAF</span> accounts are accepted.</p>
@@ -356,46 +356,101 @@ function App() {
           <nav className="shrink-0 z-50 text-white transition-colors duration-300" style={{ background: dm ? n.bgNav : "#0A3055", borderBottom: `1px solid ${dm ? n.border : "transparent"}` }}>
             <div className="max-w-[1600px] mx-auto px-4 md:px-10">
               <div className="flex items-center justify-between h-16">
-                <img src={logo} alt="STLAF" className="h-9 md:h-11 w-auto object-contain cursor-pointer" onClick={() => { setSearchTerm(""); setActiveFilter("All"); handleClosePanel(); }} />
+                <img src={logo} alt="STLAF" className="h-9 md:h-11 w-auto object-contain cursor-pointer" onClick={() => { setSearchTerm(""); setActiveFilter("All"); handleClosePanel(); setUserMenuOpen(false); }} />
                 <div className="flex items-center gap-2 md:gap-3">
-                  <button onClick={toggleDarkMode} className="p-2 rounded-xl transition-all" style={{ background: dm ? n.neonFaint : "rgba(255,255,255,.1)" }}>
+
+                  {/* Desktop only — dark mode */}
+                  <button onClick={toggleDarkMode} className="hidden md:flex p-2 rounded-xl transition-all" style={{ background: dm ? n.neonFaint : "rgba(255,255,255,.1)" }}>
                     {dm ? <svg className="w-4 h-4" style={{ color: "#fbbf24" }} fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" /></svg>
                       : <svg className="w-4 h-4 text-white/70" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" /></svg>}
                   </button>
-                  <div className="relative w-[120px] md:w-[240px]">
+
+                  {/* Desktop only — search */}
+                  <div className="hidden md:block relative w-[240px]">
                     <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none"><svg className="w-4 h-4" style={{ color: dm ? n.neonDim : "rgba(255,255,255,.4)" }} fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" /></svg></div>
                     <input type="text" placeholder="Search..." value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} className="w-full pl-9 pr-4 py-2 rounded-xl text-sm outline-none transition-all" style={{ background: dm ? n.neonGhost : "rgba(255,255,255,.1)", border: `1px solid ${dm ? n.border : "rgba(255,255,255,.1)"}`, color: "white" }} />
                   </div>
 
-                  {/* ── USER NAME DROPDOWN ── */}
+                  {/* ── USER NAME DROPDOWN (works on both mobile & desktop) ── */}
                   <div className="relative" ref={userMenuRef}>
                     <button
                       onClick={() => setUserMenuOpen(!userMenuOpen)}
-                      className="flex items-center gap-1.5 px-3 py-2 rounded-xl text-sm font-semibold transition-all truncate max-w-[180px]"
+                      className="flex items-center gap-1.5 px-3 py-2 rounded-xl text-sm font-semibold transition-all"
                       style={{
                         background: userMenuOpen ? (dm ? n.neonFaint : "rgba(255,255,255,.2)") : (dm ? n.neonGhost : "rgba(255,255,255,.08)"),
                         color: dm ? n.textPrimary : "white",
+                        maxWidth: "180px",
                       }}
                     >
                       <span className="truncate text-[11px] md:text-xs">{getUserDisplayName()}</span>
-                      <svg className={`w-3 h-3 flex-shrink-0 transition-transform ${userMenuOpen ? "rotate-180" : ""}`} style={{ opacity: 0.5 }} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <svg className={`w-3 h-3 flex-shrink-0 transition-transform duration-200 ${userMenuOpen ? "rotate-180" : ""}`} style={{ opacity: 0.5 }} fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
                       </svg>
                     </button>
 
                     {userMenuOpen && (
-                      <div className="user-menu-enter absolute right-0 top-full mt-2 w-56 rounded-xl shadow-2xl border overflow-hidden z-50"
+                      <div
+                        className="user-menu-enter absolute right-0 top-full mt-2 rounded-xl shadow-2xl border overflow-hidden z-50"
                         style={{
                           background: dm ? n.bgCard : "white",
                           border: `1px solid ${dm ? n.border : "#e5e7eb"}`,
                           boxShadow: dm ? `0 8px 30px rgba(0,0,0,.4), 0 0 1px ${n.neonFaint}` : "0 8px 30px rgba(0,0,0,.12)",
-                        }}>
-                        {/* User info */}
+                          width: "280px",
+                          right: 0,
+                        }}
+                      >
+                        {/* User info section */}
                         <div className="px-4 py-3" style={{ borderBottom: `1px solid ${dm ? n.border : "#f3f4f6"}` }}>
                           <p className="text-xs font-bold truncate" style={{ color: dm ? n.textPrimary : "#0A3055" }}>{getUserDisplayName()}</p>
                           <p className="text-[10px] truncate mt-0.5" style={{ color: dm ? n.textDim : "#9ca3af" }}>{session?.user?.email}</p>
                         </div>
-                        {/* Logout button */}
+
+                        {/* Mobile only — Search */}
+                        <div className="md:hidden px-3 py-2.5" style={{ borderBottom: `1px solid ${dm ? n.border : "#f3f4f6"}` }}>
+                          <div className="relative">
+                            <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                              <svg className="w-3.5 h-3.5" style={{ color: dm ? n.textDim : "#9ca3af" }} fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" /></svg>
+                            </div>
+                            <input
+                              type="text"
+                              placeholder="Search apps..."
+                              value={searchTerm}
+                              onChange={(e) => setSearchTerm(e.target.value)}
+                              className="w-full pl-9 pr-3 py-2.5 rounded-lg text-xs outline-none"
+                              style={{
+                                background: dm ? n.neonGhost : "#f9fafb",
+                                border: `1px solid ${dm ? n.border : "#e5e7eb"}`,
+                                color: dm ? n.textPrimary : "#0A3055",
+                              }}
+                            />
+                          </div>
+                        </div>
+
+                        {/* Dark mode toggle */}
+                        <button
+                          onClick={() => { toggleDarkMode(); setUserMenuOpen(false); }}
+                          className="w-full px-4 py-3 flex items-center justify-between transition-colors"
+                          style={{ borderBottom: `1px solid ${dm ? n.border : "#f3f4f6"}` }}
+                          onMouseEnter={(e) => { e.currentTarget.style.background = dm ? "rgba(0,191,255,.05)" : "#f9fafb"; }}
+                          onMouseLeave={(e) => { e.currentTarget.style.background = "transparent"; }}
+                        >
+                          <div className="flex items-center gap-2.5">
+                            {dm ? (
+                              <svg className="w-4 h-4" style={{ color: "#fbbf24" }} fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" /></svg>
+                            ) : (
+                              <svg className="w-4 h-4" style={{ color: dm ? n.textMuted : "#6b7280" }} fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" /></svg>
+                            )}
+                            <span className="text-xs font-semibold" style={{ color: dm ? n.textPrimary : "#374151" }}>
+                              {dm ? "Light Mode" : "Dark Mode"}
+                            </span>
+                          </div>
+                          {/* Toggle switch */}
+                          <div className="w-9 h-5 rounded-full relative transition-colors" style={{ background: dm ? n.neon : "#d1d5db" }}>
+                            <div className="absolute top-0.5 w-4 h-4 rounded-full bg-white shadow-sm transition-all" style={{ left: dm ? "18px" : "2px" }} />
+                          </div>
+                        </button>
+
+                        {/* Sign out */}
                         <button
                           onClick={handleLogout}
                           className="w-full px-4 py-3 flex items-center gap-2.5 text-left transition-colors"
